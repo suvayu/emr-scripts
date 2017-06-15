@@ -1,0 +1,9 @@
+# -*- mode: sh; -*-
+
+function get_contents() {
+    if [[ -f "$@" ]]; then
+	cat "$@"
+    else
+	echo "$@"
+    fi
+}

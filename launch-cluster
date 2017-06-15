@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# set -o xtrace
+
+function usage_help() {
+    echo -e "\e[1mUsage:\e[0m ${0##*/} [options]"
+    echo
+    echo "Wrapper script to launch clusters on Amazon EMR."
+    echo
+    echo -e "    \e[1m--name\e[0m <cluster name>"
+    echo
+    echo -e "    \e[1m--cluster-type\e[0m <SPARK|HADOOP|HBASE|PRESTO>"
+    echo
+    echo -e "    \e[1m--instance-groups\e[0m <file.json|json literal>"
+    echo
+    echo -e "    \e[1m--conf\e[0m <cluster-conf-file.json>"
+}
+
+declare -A opts
+
+# parse options
+while [[ $# -ge 1 ]]; do
+    case $1 in
+	--name)
+	    opts[name]="$2" && shift 2
+	    ;;
+	--cluster-type)
+	    opts[cluster]="$2" && shift 2
+	    ;;
+	--instance-groups)
+	    opts[instances]="$2" && shift 2
+	    ;;
+	--conf)
+	    opts[conf]="$2" && shift 2
+	    ;;
+	--help)
+	    usage_help
+	    exit
+	    ;;
+	*)
+	    echo "${0##*/}: unknown option in command line: $1"
+	    usage_help
+	    exit
+    esac
+done
+
+# defaults
+[[ -z ${opts[cluster]} ]] && opts[cluster]=SPARK
+
+[[ -z ${opts[instances]} ]] && \
+    opts[instances]='
+    [
+      {
+        "InstanceGroupType": "MASTER",
+        "InstanceCount": 1,
+        "InstanceType": "m4.large"
+      },
+      {
+	"InstanceGroupType": "CORE",
+        "InstanceCount": 2,
+        "InstanceType": "m4.large"
+      }
+    ]'
+
+declare COMMON="${0%/*}/common"
+source "$COMMON/s3"
+source "$COMMON/ec2"
+source "$COMMON/emr"
+source "$COMMON/utils"
+
+aws emr create-cluster --name ${opts[name]} \
+    --release-label $EMRv \
+    --use-default-roles \
+    --log-uri s3://$LOG_BUCKET/ \
+    --ec2-attributes $SUBNET,$KEYS \
+    --applications $(eval echo Name={${!opts[cluster]}}) \
+    --instance-groups "$(get_contents ${opts[instances]})" \
+    --configurations file://${opts[conf]} \
+    --bootstrap-action Path="s3://done-vyasa/conf/bootstrap.sh"
+
+
+# # simple
+#     --instance-type m4.large \
+#     --instance-count 3 \

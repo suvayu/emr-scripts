@@ -1,0 +1,9 @@
+# -*- mode: sh; -*-
+
+# Amazon EMR options
+declare EMRv=emr-5.6.0
+
+declare SPARK=Spark,Hadoop,Ganglia,Zeppelin
+declare HADOOP=Hadoop,Ganglia,Hive,Hue,Mahout,Pig,Tez
+declare HBASE=HBase,Ganglia,Hadoop,Hive,Hue,Phoenix,ZooKeeper
+declare PRESTO=Presto,Hadoop,Hive

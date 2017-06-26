@@ -14,11 +14,17 @@ function usage_help() {
     echo -e "    \e[1m--instance-groups\e[0m <file.json|json literal>"
     echo
     echo -e "    \e[1m--conf\e[0m <cluster-conf-file.json>"
+    echo
+    echo -e "    \e[1m--steps\e[0m <steps-conf-file.json>"
 }
 
-declare -A opts
+declare COMMON="${0%/*}/common"
+source "$COMMON/s3"
+source "$COMMON/ec2"
+source "$COMMON/emr"
 
 # parse options
+declare -A opts
 while [[ $# -ge 1 ]]; do
     case $1 in
 	--name)
@@ -33,6 +39,9 @@ while [[ $# -ge 1 ]]; do
 	--conf)
 	    opts[conf]="$2" && shift 2
 	    ;;
+	--steps)
+	    opts[steps]="$2" && shift 2
+	    ;;
 	--help)
 	    usage_help
 	    exit
@@ -44,38 +53,40 @@ while [[ $# -ge 1 ]]; do
     esac
 done
 
+# collect optional flags
+declare -a optargs
+
+for flag in cluster instances conf steps; do
+    # process only if flags are set
+    [[ -n ${opts[${flag}]} ]] || continue
+    case $flag in
+	cluster)
+	    optargs+=(--applications $(eval echo Name={${!opts[cluster]}}))
+	    ;;
+	instances)
+	    optargs+=(--instance-groups file://${opts[instances]})
+	    ;;
+	conf)
+	    optargs+=(--configurations file://${opts[conf]})
+	    ;;
+	steps)
+	    optargs+=(--steps file://${opts[steps]})
+	    ;;
+    esac
+done
+
 # defaults
 [[ -z ${opts[cluster]} ]] && opts[cluster]=SPARK
-
 [[ -z ${opts[instances]} ]] && \
-    opts[instances]='
-    [
-      {
-        "InstanceGroupType": "MASTER",
-        "InstanceCount": 1,
-        "InstanceType": "m4.large"
-      },
-      {
-	"InstanceGroupType": "CORE",
-        "InstanceCount": 2,
-        "InstanceType": "m4.large"
-      }
-    ]'
-
-declare COMMON="${0%/*}/common"
-source "$COMMON/s3"
-source "$COMMON/ec2"
-source "$COMMON/emr"
-source "$COMMON/utils"
+    optargs+=(--instance-type m4.large --instance-count 3)
+# conf and steps are optional
 
 aws emr create-cluster --name ${opts[name]} \
     --release-label $EMRv \
     --use-default-roles \
     --log-uri s3://$LOG_BUCKET/ \
     --ec2-attributes $SUBNET,$KEYS \
-    --applications $(eval echo Name={${!opts[cluster]}}) \
-    --instance-groups "$(get_contents ${opts[instances]})" \
-    --configurations file://${opts[conf]} \
+    ${optargs[@]} \
     --bootstrap-action Path="s3://done-vyasa/conf/bootstrap.sh"
 
 

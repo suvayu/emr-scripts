@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# # debug
+# set -o xtrace
+
+# duplicated from utils for easier portability
+function grep_json() {
+    local key=$1 field=${2:-4}
+    grep -e "\"$key\":" | cut -f $field -d\"
+}
+
+declare -a clusterids=($(aws emr list-clusters --active | grep_json Id 4))
+declare -a loguris=() names=()
+declare S3DISTCP=/usr/share/aws/emr/s3-dist-cp/bin/s3-dist-cp
+
+for id in ${clusterids[@]}; do
+    info="$(aws emr describe-cluster --cluster-id $id)"
+    loguris+=($(echo "$info" | grep_json LogUri 4))
+    names+=($(echo "$info" | grep_json MasterPublicDnsName 4))
+done
+
+if [[ ${#clusterids[@]} -gt 1 ]]; then
+    i=0
+    while [ $i -lt ${#clusterids[@]} ]; do
+	printf "%s) %s\t%s\n" $i ${clusterids[$i]} ${names[$i]}
+	i=$(( i + 1 ))
+    done
+    IFS= read -ep "Choose cluster #: " choice
+fi
+
+hostname | grep -q chitra && \
+    exec $S3DISTCP --src=hdfs:///var/log/spark/apps/ \
+	 --dest=${loguris[$choice]}${clusterids[$choice]}/spark-history/ || \
+	exec ssh hadoop@${names[$choice]} \
+	     $S3DISTCP --src=hdfs:///var/log/spark/apps/ \
+	     --dest=${loguris[$choice]}${clusterids[$choice]}/spark-history/

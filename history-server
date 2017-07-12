@@ -1,0 +1,16 @@
+#!/bin/bash
+
+declare cmd=$1 logs=$2
+
+case $cmd in
+    start)
+	SPARK_HISTORY_OPTS="-Dspark.history.fs.logDirectory=file:///$PWD/$logs" \
+			  $SPARK_HOME/sbin/start-history-server.sh
+	;;
+    stop)
+	$SPARK_HOME/sbin/stop-history-server.sh
+	;;
+    *)
+	echo "${0##*/}: Unknown command: $cmd"
+	echo "Usage: $ ${0##*/} <start|stop> <log-dir>"
+esac

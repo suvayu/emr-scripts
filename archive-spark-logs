@@ -13,6 +13,8 @@ declare -a clusterids=($(aws emr list-clusters --active | grep_json Id 4))
 declare -a loguris=() names=()
 declare S3DISTCP=/usr/share/aws/emr/s3-dist-cp/bin/s3-dist-cp
 
+[[ ${#clusterids[@]} -eq 0 ]] && exit
+
 for id in ${clusterids[@]}; do
     info="$(aws emr describe-cluster --cluster-id $id)"
     loguris+=($(echo "$info" | grep_json LogUri 4))

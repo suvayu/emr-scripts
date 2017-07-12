@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# # debug
+# set -o xtrace
+
+declare COMMON="${0%/*}/common"
+source "$COMMON/utils"
+
+[[ $# -gt 2 ]] && \
+    echo "Usage: ${0##*/} [aws-profile] <instance-id>"
+
+if [[ $# -eq 1 ]]; then
+    declare instance=$1
+elif [[ $# -eq 2 ]]; then
+    declare profile=$1 instance=$2
+fi
+
+[[ -n $profile ]] && \
+    AWS="aws --profile $profile" || AWS=aws
+
+loguri=$($AWS emr describe-cluster --cluster-id $instance | grep_json LogUri)
+exec $AWS s3 cp --recursive ${loguri}${instance}/ $instance/

@@ -10,5 +10,5 @@ function get_contents() {
 
 function grep_json() {
     local key=$1 field=${2:-4}
-    grep -e "\"$key\":" | cut -f $field -d\"
+    grep -e "\"[[:alnum:]]*$key[[:alnum:]]*\":" | cut -f $field -d\"
 }

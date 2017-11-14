@@ -19,8 +19,7 @@ function usage_help() {
 }
 
 declare COMMON="${0%/*}/common"
-source "$COMMON/s3"
-source "$COMMON/ec2"
+source "$COMMON/conf"
 source "$COMMON/emr"
 
 # parse options

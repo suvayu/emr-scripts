@@ -30,7 +30,7 @@ if [[ ${#clusterids[@]} -gt 1 ]]; then
     IFS= read -ep "Choose cluster #: " choice
 fi
 
-hostname | grep -q chitra && \
+hostname | grep -q -F compute.amazonaws.com && \
     exec $S3DISTCP --src=hdfs:///var/log/spark/apps/ \
 	 --dest=${loguris[$choice]}${clusterids[$choice]}/spark-history/ || \
 	exec ssh hadoop@${names[$choice]} \

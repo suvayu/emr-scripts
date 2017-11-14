@@ -7,3 +7,7 @@ declare SPARK=Spark,Hadoop,Ganglia,Zeppelin
 declare HADOOP=Hadoop,Ganglia,Hive,Hue,Mahout,Pig,Tez
 declare HBASE=HBase,Ganglia,Hadoop,Hive,Hue,Phoenix,ZooKeeper
 declare PRESTO=Presto,Hadoop,Hive
+
+function cluster_nodes() {
+    yarn node -list 2> /dev/null | grep internal | cut -d' ' -f1 | cut -d: -f1
+}

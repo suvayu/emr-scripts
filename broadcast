@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# executes a command on all nodes on the cluster
+
+declare cmd=("$@")
+
+declare COMMON="${0%/*}/common"
+source "$COMMON/emr"
+
+declare nodes=(cluster_nodes)
+
+for node in ${nodes[@]}; do
+    echo $node
+    ssh hadoop@$node ${cmd[@]}
+    echo
+done
+
+echo $HOSTNAME
+exec ${cmd[@]}

@@ -1,0 +1,3 @@
+Host	*.internal
+	StrictHostKeyChecking	no
+	# IdentityFile		~/.ssh/emr-id-rsa

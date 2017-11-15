@@ -2,7 +2,11 @@
   {
     "Classification": "spark-defaults",
     "Properties": {
-      "spark.pyspark.python": "python3"
+      "spark.yarn.executor.memoryOverhead": "1638",
+      "spark.pyspark.python": "python3",
+      "spark.driver.extraClassPath": "/usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*:/home/hadoop/deps/*.jar",
+      "spark.executor.extraClassPath": "/usr/lib/hadoop-lzo/lib/*:/usr/lib/hadoop/hadoop-aws.jar:/usr/share/aws/aws-java-sdk/*:/usr/share/aws/emr/emrfs/conf:/usr/share/aws/emr/emrfs/lib/*:/usr/share/aws/emr/emrfs/auxlib/*:/usr/share/aws/emr/security/conf:/usr/share/aws/emr/security/lib/*:/home/hadoop/deps/*.jar",
+      "spark.executorEnv.PYTHONHASHSEED": "42"
     }
   },
   {
@@ -12,7 +16,10 @@
       {
 	"Classification": "export",
 	"Properties": {
-	  "PYSPARK_PYTHON": "python3"
+	  "PYSPARK_PYTHON": "python3",
+	  "CLASSPATH": "`hdfs classpath --glob`",
+	  "PYTHONPATH": "`printf %s: /home/hadoop/deps/*.jar $PYTHONPATH|sed -e 's/:$//'`",
+	  "PYTHONHASHSEED": "42"
 	},
 	"Configurations": []
       }
@@ -21,7 +28,21 @@
   {
     "Classification": "zeppelin-env",
     "Properties": {
-      "zeppelin.python": "python3"
-    }
+    },
+    "Configurations": [
+      {
+	"Classification": "export",
+	"Properties": {
+	  "SPARK_HOME": "/usr/lib/spark",
+	  "PYSPARK_PYTHON": "python3",
+	  "CLASSPATH": "`hdfs classpath --glob`",
+	  "PYTHONPATH": "`printf %s: /home/hadoop/deps/*.jar $PYTHONPATH|sed -e 's/:$//'`",
+	  "PYTHONHASHSEED": "42",
+	  "ZEPPELIN_NOTEBOOK_S3_BUCKET": "done-vyasa",
+	  "ZEPPELIN_NOTEBOOK_S3_USER": "zeppelin"
+	},
+	"Configurations": []
+      }
+    ]
   }
 ]

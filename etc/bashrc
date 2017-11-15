@@ -1,0 +1,31 @@
+# path
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+
+# case insensitive search, interpret colour escapes, target line on 3
+export LESS="-iRj3$"
+
+# # PySpark
+# export SPARK_HOME=/usr/lib/spark
+# # parenthesis necessary for filename glob expansion
+# local py4j=(${SPARK_HOME}/python/lib/py4j*.zip)
+# export PYTHONPATH="${SPARK_HOME}/python/lib/pyspark.zip:$PYTHONPATH"
+# export PYTHONPATH="$py4j:$PYTHONPATH"
+# export PYTHONPATH=$(printf %s: /home/hadoop/deps/*.jar $PYTHONPATH|sed -e 's/:$//')
+# export CLASSPATH=$(hdfs classpath --glob)
+
+# bash options
+shopt -s cdspell
+shopt -s extglob
+shopt -s checkwinsize
+shopt -s histreedit
+shopt -s histverify
+shopt -s checkjobs
+shopt -s autocd
+shopt -s direxpand
+
+# aliases
+alias lt='ls --color=tty -lhtr'
+alias ls='ls --color=tty'
+alias grep='grep --color=always'
+alias tree='tree -C'
+alias diff='diff -u'

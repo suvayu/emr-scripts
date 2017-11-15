@@ -6,7 +6,7 @@ sudo yum -y install python35{,-{devel,pip}} htop
 # deps
 declare DEPSDIR=/home/hadoop/deps
 mkdir -p $DEPSDIR
-aws s3 sync s3://done-vyasa/deps/ $DEPSDIR/ --exclude="*" \
+aws s3 sync s3://<my-bucket>/deps/ $DEPSDIR/ --exclude="*" \
     --include="*.whl" --include="*.jar"
 
 sudo python3.5 -m pip install -U pip
@@ -23,8 +23,8 @@ install_deps &
 
 # access
 declare SSHDIR=/home/hadoop/.ssh
-aws s3 sync s3://done-vyasa/conf/keys/ $SSHDIR/
-aws s3 cp s3://done-vyasa/conf/ssh_config $SSHDIR/config
+aws s3 sync s3://<my-bucket>/conf/keys/ $SSHDIR/
+aws s3 cp s3://<my-bucket>/conf/ssh_config $SSHDIR/config
 
 chmod 444 $SSHDIR/config
 cat $SSHDIR/*.pub >> $SSHDIR/authorized_keys
@@ -36,8 +36,8 @@ cat $SSHDIR/*.pub >> $SSHDIR/authorized_keys
 # scripts
 declare BIN=/home/hadoop/bin
 mkdir $BIN
-aws s3 sync s3://done-vyasa/conf/scripts/ $BIN
-aws s3 sync s3://done-vyasa/job-scripts/ $BIN
+aws s3 sync s3://<my-bucket>/conf/scripts/ $BIN
+aws s3 sync s3://<my-bucket>/job-scripts/ $BIN
 chmod +x $BIN/*
 
 echo >> /home/hadoop/.bashrc

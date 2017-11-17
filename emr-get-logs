@@ -18,5 +18,6 @@ fi
 [[ -n $profile ]] && \
     AWS="aws --profile $profile" || AWS=aws
 
-loguri=$($AWS emr describe-cluster --cluster-id $instance | grep_json LogUri)
-exec $AWS s3 cp --recursive ${loguri}${instance}/ $instance/
+loguri=$($AWS emr describe-cluster --cluster-id $instance | \
+	     grep_json LogUri | sed -e s%s3n://%s3://%)
+exec $AWS s3 sync ${loguri}${instance}/ $instance/

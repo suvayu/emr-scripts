@@ -86,7 +86,7 @@ aws emr create-cluster --name ${opts[name]} \
     --log-uri s3://$LOG_BUCKET/ \
     --ec2-attributes $SUBNET,$KEYS \
     ${optargs[@]} \
-    --bootstrap-action Path="s3://done-vyasa/conf/bootstrap.sh"
+    --bootstrap-action Path="s3://${BUCKET}/conf/bootstrap.sh"
 
 
 # # simple

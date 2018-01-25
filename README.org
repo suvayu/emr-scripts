@@ -21,6 +21,9 @@ files used to manage AWS EMR clusters (tested on small clusters).
     declare LOG_BUCKET=<my-log-bucket>/elasticmapreduce
   #+end_example
 
+  /Note/: You might need to replace a few ~<my-bucket>~ in the
+  bootstrap script, and the conf files.
+
 - Other configuration files are available under ~etc/~.
   - Cluster configuration is in ~etc/cluster-conf.json~
   - Instance configurations are in ~etc/instance-groups-*.json~

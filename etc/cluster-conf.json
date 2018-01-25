@@ -38,7 +38,7 @@
 	  "CLASSPATH": "`hdfs classpath --glob`",
 	  "PYTHONPATH": "`printf %s: /home/hadoop/deps/*.jar $PYTHONPATH|sed -e 's/:$//'`",
 	  "PYTHONHASHSEED": "42",
-	  "ZEPPELIN_NOTEBOOK_S3_BUCKET": "done-vyasa",
+	  "ZEPPELIN_NOTEBOOK_S3_BUCKET": "<my-bucket>",
 	  "ZEPPELIN_NOTEBOOK_S3_USER": "zeppelin"
 	},
 	"Configurations": []

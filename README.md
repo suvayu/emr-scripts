@@ -1,17 +1,17 @@
 
 # Table of Contents
 
-1.  [Introduction](#org643dd90)
-2.  [Setup](#org150f429)
-    1.  [The bootstrap script](#org4743cb8)
-3.  [Launching a cluster](#org344694f)
-4.  [Archiving Spark logs](#orgaeef60e)
-5.  [Spark history server](#orgbade9ac)
-    1.  [Standalone Spark setup locally](#org666e993)
-6.  [Broadcasting commands to all nodes](#orgb60fc44)
+1.  [Introduction](#org7220fc3)
+2.  [Setup](#org4e3396b)
+    1.  [The bootstrap script](#orgdfe0328)
+3.  [Launching a cluster](#org0edc9f2)
+4.  [Archiving Spark logs](#org510415a)
+5.  [Spark history server](#org2bc5e9e)
+    1.  [Standalone Spark setup locally](#org70a4156)
+6.  [Broadcasting commands to all nodes](#org88ed71c)
 
 
-<a id="org643dd90"></a>
+<a id="org7220fc3"></a>
 
 # Introduction
 
@@ -19,7 +19,7 @@ This repository is a collection of shell scripts and configuration
 files used to manage AWS EMR clusters (tested on small clusters).
 
 
-<a id="org150f429"></a>
+<a id="org4e3396b"></a>
 
 # Setup
 
@@ -36,6 +36,9 @@ files used to manage AWS EMR clusters (tested on small clusters).
         # Amazon S3 config
         declare BUCKET=<my-bucket>
         declare LOG_BUCKET=<my-log-bucket>/elasticmapreduce
+    
+    *Note*: You might need to replace a few `<my-bucket>` in the
+    bootstrap script, and the conf files.
 
 -   Other configuration files are available under `etc/`.
     -   Cluster configuration is in `etc/cluster-conf.json`
@@ -47,7 +50,7 @@ files used to manage AWS EMR clusters (tested on small clusters).
     (`$HOME/.aws/`).
 
 
-<a id="org4743cb8"></a>
+<a id="orgdfe0328"></a>
 
 ## The bootstrap script
 
@@ -62,7 +65,7 @@ files used to manage AWS EMR clusters (tested on small clusters).
 -   **Utilities**: Finally it copies a few useful scripts into the `PATH`.
 
 
-<a id="org344694f"></a>
+<a id="org0edc9f2"></a>
 
 # Launching a cluster
 
@@ -84,7 +87,7 @@ The cluster can be terminated like this:
     $ aws emr terminate-clusters --cluster-ids <cluster-id>
 
 
-<a id="orgaeef60e"></a>
+<a id="org510415a"></a>
 
 # Archiving Spark logs
 
@@ -102,7 +105,7 @@ The archived logs can be retrieved later using `emr-get-logs` by
 providing the cluster id.
 
 
-<a id="orgbade9ac"></a>
+<a id="org2bc5e9e"></a>
 
 # Spark history server
 
@@ -115,7 +118,7 @@ installation of Spark.  You can point to the installation by setting
     $ history-server stop
 
 
-<a id="org666e993"></a>
+<a id="org70a4156"></a>
 
 ## Standalone Spark setup locally
 
@@ -148,7 +151,7 @@ Without going into too many details, you can setup spark like this:
     }
 
 
-<a id="orgb60fc44"></a>
+<a id="org88ed71c"></a>
 
 # Broadcasting commands to all nodes
 
